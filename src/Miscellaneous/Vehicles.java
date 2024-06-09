@@ -38,6 +38,11 @@ public class Vehicles {
         public int getMaxDistanceBetweenServicesInKilometers() {
             return Service.super.getMaxDistanceBetweenServicesInKilometers();
         }
+
+        @Override
+        public boolean isAirBalloonAvailable() {
+            return true;
+        }
     }
 
     public static final class Truck extends Vehicle implements Service {
@@ -61,6 +66,12 @@ public class Vehicles {
         @Override
         public int getMaxDistanceBetweenServicesInKilometers() {
             return Service.super.getMaxDistanceBetweenServicesInKilometers();
+        }
+    }
+
+    public class PorscheCar extends Car {
+        public PorscheCar(int numberOfSeats, String registrationNumber) {
+            super(numberOfSeats, registrationNumber);
         }
     }
 

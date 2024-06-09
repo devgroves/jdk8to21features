@@ -4,6 +4,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.function.LongConsumer;
+import java.util.function.LongUnaryOperator;
+import java.util.random.RandomGenerator;
+import java.util.random.RandomGeneratorFactory;
+import java.util.stream.LongStream;
 
 import static java.lang.StringTemplate.STR;
 
@@ -59,6 +64,19 @@ public class Main {
         String name = "Baeldung";
         String welcomeText = STR."Welcome to \{name} - \{privilegedCustomer}";
         System.out.println("welcome text " + welcomeText);
+
+        RandomGeneratorFactory.all()
+                .map(f -> f.name())
+                .sorted()
+                .forEach(n -> System.out.println(n));
+
+        RandomGenerator random1 = RandomGenerator.of("Random");
+        random1.longs().forEach(new LongConsumer() {
+            @Override
+            public void accept(long value) {
+                System.out.println("value " + value);
+            }
+        });
 
         // exploring sequenced collections..
         ArrayList<Integer> numbers = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8));
