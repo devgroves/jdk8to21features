@@ -13,7 +13,7 @@ public class VirtualThreadDemo {
         } catch(Exception e) {
             System.out.println(e);
         }
-        System.out.print("Work Done - " + atomicInteger.incrementAndGet());
+//        System.out.print("Work Done - " + atomicInteger.incrementAndGet());
     };
 
     public static void main(String args[]) {
@@ -29,8 +29,8 @@ public class VirtualThreadDemo {
             }
         }
         Instant finish = Instant.now();
-        long timeElapsed = Duration.between(start, finish).toMinutes();
-        System.out.println("OS Thread Demo: Total elapsed time : " + timeElapsed);
+        long timeElapsed = Duration.between(start, finish).toSeconds();
+        System.out.println("OS Thread Demo: Total elapsed time in seconds: " + timeElapsed);
     }
 
     public static void virtualThreadDemo() {
@@ -42,6 +42,6 @@ public class VirtualThreadDemo {
         }
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toSeconds();
-        System.out.println("Virtual Thread Demo: Total elapsed time : " + timeElapsed);
+        System.out.println("Virtual Thread Demo: Total elapsed time in seconds: " + timeElapsed);
     }
 }
