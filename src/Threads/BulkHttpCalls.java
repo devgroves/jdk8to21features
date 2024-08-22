@@ -31,7 +31,6 @@ public class BulkHttpCalls {
             String city = recordParts[0].replace(" ", "%20");
             String stateAbbr = recordParts[9];
 
-//            System.out.println("zipcode ..." + city + " " + stateAbbr);
             ZipApiThread zipApiThread = new ZipApiThread(stateAbbr, city);
             zipApiThreadList.add(zipApiThread);
         }
@@ -50,9 +49,10 @@ public class BulkHttpCalls {
         }
         try (var executor = Executors.newFixedThreadPool(3000, factory)) {
             Instant midTime = Instant.now();
-            System.out.println("Start Time" + startTime + " end time " + midTime);
-            System.out.println("Total Time" + ChronoUnit.MICROS.between(startTime, midTime));
+            System.out.println("Start Time :" + startTime + " end time (after reading zip file) :" + midTime);
+            System.out.println("Total Time (in milli seconds):" + ChronoUnit.MILLIS.between(startTime, midTime));
             try {
+                System.out.println("Processing...");
                 List<Future<String>> resultFutures = executor.invokeAll(zipApiThreadList);
                 System.out.println("active count after invoke all-" + Thread.activeCount());
                 int successCnt = 0, cancelCnt = 0, notCompleted = 0;
@@ -82,27 +82,16 @@ public class BulkHttpCalls {
                 usedMemory = ((double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) /Runtime.getRuntime().totalMemory()) * 100;
                 totalUsedCPUTime = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime() - cpuStartTime;
                 System.out.println( "Used memory " + usedMemory + " Used cpu time " + totalUsedCPUTime);
-
-
-
                 System.out.println("active count after executor shutdownnow-" + Thread.activeCount());
 
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-//                executor.submit(() -> {
-//                    BulkHttpCalls bulkHttpCalls = new BulkHttpCalls();
-//                    try {
-//                        bulkHttpCalls.getZipCodeDetails(city, stateAbbr);
-//                    } catch (IOException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                });
 
         }
         Instant endTime = Instant.now();
-        System.out.println("Start Time" + startTime + " end time " + endTime);
-        System.out.println("Total Time" + ChronoUnit.SECONDS.between(startTime, endTime));
+        System.out.println("Start Time :" + startTime + " end time :" + endTime);
+        System.out.println("Total Time (in seconds):" + ChronoUnit.SECONDS.between(startTime, endTime));
     }
 
     public static class ZipApiThread implements Callable<String> {
@@ -128,19 +117,10 @@ public class BulkHttpCalls {
                         result.append(line);
                     }
                 } catch (FileNotFoundException exception) {
-                    System.out.println("zip code details not found " + zipcodeByCity);
-                }
-//                System.out.println(STR."**********City: \{city} StateAbbr: \{stateAbbr}******");
-//                System.out.println(result.toString());
-                JSONObject parseJson = new JSONObject(result.toString());
-                JSONArray jsonArray = parseJson.getJSONArray("places");
-                for (int i=0; i<jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String zipCode = jsonObject.getString("post code");
-//                    getZipCodeDetails(zipCode);
+//                    System.out.println("zip code details not found " + zipcodeByCity);
                 }
             } catch (IOException exception) {
-                System.out.println("io exception.. " + zipcodeByCity);
+//                System.out.println("io exception.. " + zipcodeByCity);
 //                exception.printStackTrace();
                 throw new RuntimeException(exception);
             } catch (Exception exception) {
@@ -149,24 +129,6 @@ public class BulkHttpCalls {
             return result.toString();
         }
 
-        public void getZipCodeDetails(String zipCode) throws IOException {
-            String zipcodeUrl = STR."https://api.zippopotam.us/us/\{zipCode}";
-            System.out.println("zipcode url -"+zipcodeUrl);
-            StringBuilder result = new StringBuilder();
-            URL url = new URL(zipcodeUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            try (BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()))) {
-                for (String line; (line = reader.readLine()) != null; ) {
-                    result.append(line);
-                }
-            } catch(FileNotFoundException exception) {
-                System.out.println("zip code details not found "+zipcodeUrl);
-            }
-            System.out.println(STR."**********\{zipCode}******");
-            System.out.println(result.toString());
-        }
     }
 
 }

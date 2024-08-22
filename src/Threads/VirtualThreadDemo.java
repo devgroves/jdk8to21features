@@ -42,6 +42,6 @@ public class VirtualThreadDemo {
         }
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toSeconds();
-        System.out.println("Virtual Thread Demo: Total elapsed time in seconds: " + timeElapsed);
+        System.out.println("Virtual Thread Demo: Total elapsed time in secondsSS: " + timeElapsed);
     }
 }
